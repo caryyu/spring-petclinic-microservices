@@ -1,0 +1,7 @@
+prometheus:
+  enabled: false
+
+kiali:
+  enabled: true
+  createDemoSecret: true
+  prometheusAddr: http://prometheus-operator-prometheus.system-monitoring:9090

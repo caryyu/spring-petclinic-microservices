@@ -1,0 +1,16 @@
+image:
+  repository: caryyu/petclinic-vets-service
+  tag: latest
+  pullPolicy: IfNotPresent
+  pullSecrets: false
+
+replicaCount: 1
+
+podAnnotations: false
+
+database:
+  host: mysql
+  port: 3306
+  username: pc_vets
+  password: pc_vets
+  name: petclinic_vets

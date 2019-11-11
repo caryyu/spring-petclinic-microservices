@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "app.fullname" . }}
+  labels:
+    app: {{ template "app.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- range $key, $value := .Values.servicemonitor.labels }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  jobLabel: {{ template "app.fullname" . }}
+  selector:
+    matchLabels:
+      app: {{ template "app.name" . }}
+      release: {{ .Release.Name }}
+  namespaceSelector:
+    any: true
+  endpoints:
+    - port: {{ template "app.name" . }}
+      path: /actuator/prometheus
+      interval: 30s

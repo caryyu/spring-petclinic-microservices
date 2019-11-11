@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "app.fullname" . }}
+  labels:
+    app: {{ template "app.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "app.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "app.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+      - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      containers:
+        - name: {{ template "app.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          env:
+            - name: DB_HOST
+              value: {{ .Values.database.host | quote }}
+            - name: DB_PORT
+              value: {{ .Values.database.port | quote }}
+            - name: DB_USERNAME
+              value: {{ .Values.database.username | quote }}
+            - name: DB_PASSWORD
+              value: {{ .Values.database.password | quote }}
+            - name: DB_NAME
+              value: {{ .Values.database.name | quote }}
+          args:
+            - --spring.datasource.url=jdbc:mysql://$(DB_HOST):$(DB_PORT)/$(DB_NAME)?useSSL=false
+            - --spring.datasource.username=$(DB_USERNAME)
+            - --spring.datasource.password=$(DB_PASSWORD)
+            - --management.endpoint.prometheus.enabled=true
+            - --management.endpoints.web.exposure.include=info,health,prometheus
+          ports:
+            - name: {{ template "app.name" . }}
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30

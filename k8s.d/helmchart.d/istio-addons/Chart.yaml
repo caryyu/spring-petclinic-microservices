@@ -1,0 +1,9 @@
+apiVersion: v1
+name: istio-addons
+version: 0.0.1
+appVersion: 0.0.1
+description: Helm chart for istio resources that are not installed with istio chart
+keywords:
+  - istio
+engine: gotpl
+icon: https://istio.io/favicons/android-192x192.png

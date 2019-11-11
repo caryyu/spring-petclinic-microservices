@@ -1,0 +1,10 @@
+apiVersion: v1
+name: spring-boot
+version: 0.0.1
+appVersion: 2.1.4
+description: Providing an out-of-box solution
+keywords:
+  - spring-boot
+maintainers:
+  - name: caryyu
+    email: caryyu.tg@gmail.com

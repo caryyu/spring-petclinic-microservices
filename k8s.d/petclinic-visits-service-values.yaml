@@ -1,0 +1,16 @@
+image:
+  repository: caryyu/petclinic-visits-service
+  tag: latest
+  pullPolicy: IfNotPresent
+  pullSecrets: false
+
+replicaCount: 1
+
+podAnnotations: false
+
+database:
+  host: mysql
+  port: 3306
+  username: pc_visits
+  password: pc_visits
+  name: petclinic_visits

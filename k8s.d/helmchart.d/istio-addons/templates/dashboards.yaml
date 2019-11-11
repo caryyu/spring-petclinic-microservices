@@ -1,0 +1,16 @@
+{{ $root := . }}
+{{ range $path, $bytes := .Files.Glob "dashboards/*.json" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-{{ base ( trimSuffix ".json" $path) }}
+  labels:
+    app.kubernetes.io/name: {{ $.Release.Name }}
+    helm.sh/chart: {{ $.Release.Chart }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    grafana_dashboard: "True"
+data:
+{{ ($root.Files.Glob $path).AsConfig | indent 2 }}
+---
+{{ end }}

@@ -1,0 +1,10 @@
+apiVersion: v1
+name: system-addons
+version: 0.0.1
+appVersion: 0.0.1
+description: Providing an out-of-box solution
+keywords:
+  - system-addons
+maintainers:
+  - name: caryyu
+    email: caryyu.tg@gmail.com

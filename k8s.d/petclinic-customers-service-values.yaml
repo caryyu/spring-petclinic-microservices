@@ -1,0 +1,16 @@
+image:
+  repository: caryyu/petclinic-customers-service
+  tag: latest
+  pullPolicy: IfNotPresent
+  pullSecrets: false
+
+replicaCount: 1
+
+podAnnotations: false
+
+database:
+  host: mysql
+  port: 3306
+  username: pc_customers
+  password: pc_customers
+  name: petclinic_customers
