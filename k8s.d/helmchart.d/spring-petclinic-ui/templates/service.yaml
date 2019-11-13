@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: {{ template "app.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "app.fullname" . }}
+spec:
+  selector:
+    app: {{ template "app.name" . }}
+    release: {{ .Release.Name }}
+  ports:
+    - port: 80
+      name: www

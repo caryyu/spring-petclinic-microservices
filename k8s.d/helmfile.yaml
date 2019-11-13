@@ -73,3 +73,8 @@ releases:
       - petclinic/mysql
     values:
       - petclinic-visits-service-values.yaml
+
+  - name: spring-petclinic-ui
+    namespace: petclinic
+    chart: ./helmchart.d/spring-petclinic-ui
+    version: 0.0.1

@@ -1,0 +1,9 @@
+image:
+  repository: caryyu/spring-petclinic-ui
+  tag: latest
+  pullPolicy: IfNotPresent
+  pullSecrets: false
+
+replicaCount: 1
+
+podAnnotations: false

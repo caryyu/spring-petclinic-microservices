@@ -1,0 +1,92 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ .Release.Name }}-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - {{ .Release.Name }}-gateway
+  http:
+  # /petclinic/api/vets
+  - name: {{ .Release.Name }}-vets
+    match:
+    - uri:
+        prefix: /petclinic/api/vets
+    rewrite:
+      uri: /vets
+    route:
+      - destination:
+          host: petclinic-vets-service-spring-boot
+          port:
+            number: 8080
+  # /petclinic/api/pets
+  - name: {{ .Release.Name }}-customers-pets
+    match:
+    - uri:
+      prefix: /petclinic/api/pets
+    rewrite:
+      uri: /owners/*/pets
+    route:
+      - destination:
+          host: petclinic-customers-service-spring-boot
+          port:
+            number: 8080
+  # /petclinic/api/owners
+  - name: {{ .Release.Name }}-customers-owners
+    match:
+    - uri:
+        prefix: /petclinic/api/owners
+    rewrite:
+      uri: /owners
+    route:
+      - destination:
+          host: petclinic-customers-service-spring-boot
+          port:
+            number: 8080
+  # /petclinic/api/pettypes
+  - name: {{ .Release.Name }}-customers-pettypes
+    match:
+      - uri:
+          prefix: /petclinic/api/pettypes
+    rewrite:
+      uri: /petTypes
+    route:
+      - destination:
+          host: petclinic-customers-service-spring-boot
+          port:
+            number: 8080
+  # default www
+  - route:
+      - destination:
+          host: {{ template "app.fullname" . }}
+          port:
+            number: 80
+#  - name: {{ .Release.Name }}-visits
+#    match:
+#    - uri:
+#        prefix: /petclinic/api/visits
+#    rewrite:
+#      uri: /petclinic-visits-service
+#    route:
+#      - destination:
+#          host: istio-ingressgateway
+#          port:
+#            number: 80
